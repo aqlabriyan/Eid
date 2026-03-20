@@ -1,0 +1,426 @@
+/* === Reset & Basic Setup === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth; /* Scroll halus saat klik link internal */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    /* Background Gradasi Bergerak */
+    background: linear-gradient(-45deg, #eeffc4, #b3e6b5, #a0d9a2, #87ceeb);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    overflow-x: hidden;
+    position: relative; /* Untuk ornamen pita */
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* === Ornamen Pita (Contoh Sederhana) === */
+body::before, body::after {
+    content: '';
+    position: fixed; /* Atau absolute jika ingin scroll bersama konten */
+    height: 200px; /* Tinggi pita */
+    width: 300px; /* Lebar pita */
+    background: rgba(255, 255, 255, 0.15); /* Warna pita semi-transparan */
+    border-radius: 50%; /* Membuat bentuk oval */
+    z-index: -1; /* Di belakang konten */
+    filter: blur(30px); /* Efek blur halus */
+    opacity: 0.7;
+}
+
+body::before {
+    top: -50px;
+    left: -80px;
+    transform: rotate(-30deg);
+    animation: gentleRotate 20s linear infinite alternate;
+}
+
+body::after {
+    bottom: -60px;
+    right: -100px;
+    transform: rotate(20deg);
+    background: rgba(255, 215, 0, 0.1); /* Warna emas muda transparan */
+    animation: gentleRotate 25s linear infinite alternate-reverse;
+}
+
+@keyframes gentleRotate {
+    from { transform: rotate(-30deg) scale(1); }
+    to { transform: rotate(10deg) scale(1.1); }
+}
+/* Tambahkan lebih banyak pseudo-element atau div jika ingin pita lebih kompleks */
+
+
+/* === Header & Tombol Hamburger === */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 25px;
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end; /* Pindahkan tombol ke kanan */
+    transition: background-color 0.3s ease;
+}
+/* Efek header saat scroll (optional)
+body.scrolled .main-header {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+} */
+
+.menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1002; /* Di atas overlay saat tertutup */
+    position: relative; /* Untuk positioning span */
+    width: 40px;
+    height: 40px;
+}
+
+.hamburger-icon {
+    display: block;
+    position: relative;
+    width: 24px; /* Lebar garis hamburger */
+    height: 2px;  /* Tinggi garis hamburger */
+    background-color: #333; /* Warna garis */
+    transition: all 0.3s ease;
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #333;
+    transition: all 0.3s ease;
+}
+
+.hamburger-icon::before {
+    top: -7px; /* Jarak garis atas */
+}
+
+.hamburger-icon::after {
+    bottom: -7px; /* Jarak garis bawah */
+}
+
+/* Animasi Hamburger menjadi X saat menu aktif */
+.menu-overlay.active .menu-toggle .hamburger-icon {
+    background-color: transparent; /* Sembunyikan garis tengah */
+}
+
+.menu-overlay.active .menu-toggle .hamburger-icon::before {
+    top: 0;
+    transform: rotate(45deg);
+    background-color: #fff; /* Warna X putih kontras */
+}
+
+.menu-overlay.active .menu-toggle .hamburger-icon::after {
+    bottom: 0;
+    transform: rotate(-45deg);
+    background-color: #fff; /* Warna X putih kontras */
+}
+
+/* === Menu Overlay === */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(40, 167, 69, 0.95); /* Hijau dominan semi-transparan */
+    backdrop-filter: blur(5px);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%); /* Mulai dari atas */
+    transition: opacity 0.5s ease, visibility 0s linear 0.5s, transform 0.5s ease;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, visibility 0s linear 0s, transform 0.5s ease;
+}
+
+.close-menu-btn {
+    position: absolute;
+    top: 25px;
+    right: 35px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.overlay-nav {
+    text-align: center;
+}
+
+.overlay-nav a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Ukuran font responsif */
+    font-weight: 600;
+    margin: 20px 0;
+    padding: 10px 20px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.overlay-nav a:hover {
+    transform: scale(1.1);
+    color: #ffd700; /* Warna emas saat hover */
+}
+
+
+/* === Hero Section Styling Ulang === */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 100px 20px 20px;
+    color: #fff; /* Teks putih kontras */
+    /* Gunakan overlay gelap agar teks terbaca di atas background cerah */
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+    /* Hapus background image jika pakai gradasi body */
+    overflow: hidden;
+}
+
+.hero-content { z-index: 2; }
+
+.hero-section h1 {
+    font-family: 'Dancing Script', cursive; /* Font lebih elegan */
+    font-size: clamp(3rem, 10vw, 6rem);
+    margin-bottom: 0.1em;
+    color: #fff; /* Putih */
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section h2 {
+    font-family: 'Pacifico', cursive;
+    font-size: clamp(2rem, 7vw, 4rem);
+    margin-bottom: 0.5em;
+    color: #ffd700; /* Emas */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hero-section p {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    margin-bottom: 1.5em;
+    color: #eee;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+}
+.hero-section p em {
+    color: #c8e6c9;
+}
+
+/* Ornamen Hero (Bulan, Bintang, Siluet) - Sesuaikan jika perlu */
+.mosque-silhouette {
+    /* ... style siluet dari sebelumnya ... */
+    opacity: 0.6; /* Sedikit lebih subtle */
+    z-index: 1;
+}
+.stars { z-index: 0; /* ... style bintang ... */ }
+.crescent-moon { z-index: 1; /* ... style bulan sabit ... */ }
+
+/* === Animasi Teks Hero Baru === */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animated-greeting-hero {
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+}
+.fade-in-down { animation-name: fadeInDown; }
+.fade-in-up { animation-name: fadeInUp; }
+
+/* Delay untuk animasi hero */
+.delay-1 { animation-delay: 0.3s; }
+.delay-2 { animation-delay: 0.6s; }
+.delay-3 { animation-delay: 0.9s; }
+
+/* === Content Section Styling Ulang === */
+.content-section {
+    padding: 60px 40px;
+    margin: 60px auto;
+    max-width: 800px;
+    background-color: rgba(255, 255, 255, 0.7); /* Lebih transparan */
+    backdrop-filter: blur(10px); /* Efek kaca lebih kuat */
+    border-radius: 20px; /* Lebih bulat */
+    box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+    text-align: center;
+    position: relative;
+    overflow: hidden; /* Penting untuk animasi dari luar */
+}
+
+.content-section h2 {
+    font-family: 'Pacifico', cursive;
+    color: #1e7e34; /* Hijau tua */
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    margin-bottom: 25px;
+}
+
+.content-section p {
+    margin-bottom: 18px;
+    color: #444;
+    font-size: 1.1rem;
+}
+
+.creator-name {
+    font-weight: 700; /* Lebih tebal */
+    font-size: 1.6rem;
+    color: #28a745; /* Hijau cerah */
+    margin-top: 10px;
+}
+
+.inline-ornaments-container {
+    margin-top: 30px;
+}
+/* Styling pixel art container & pixel tetap sama */
+/* ... (salin dari CSS pixel art sebelumnya) ... */
+
+/* === Animasi Scroll Kreatif === */
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-80px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(80px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleUp {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+}
+@keyframes rotateIn {
+    from { opacity: 0; transform: rotate(-15deg) scale(0.8); }
+    to { opacity: 1; transform: rotate(0deg) scale(1); }
+}
+
+/* Kelas dasar untuk elemen yang akan dianimasikan saat scroll */
+.scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .scroll-animate-rotate {
+    opacity: 0;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Terapkan transformasi awal */
+.scroll-animate-left { transform: translateX(-80px); }
+.scroll-animate-right { transform: translateX(80px); }
+.scroll-animate-scale { transform: scale(0.7); }
+.scroll-animate-rotate { transform: rotate(-15deg) scale(0.8); }
+
+/* Saat elemen terlihat (kelas .visible ditambahkan oleh JS) */
+.scroll-animate-left.visible,
+.scroll-animate-right.visible,
+.scroll-animate-scale.visible,
+.scroll-animate-rotate.visible {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg); /* Reset transformasi */
+}
+
+/* Delay untuk elemen inline (jika diinginkan) */
+.delay-inline {
+    transition-delay: 0.3s;
+}
+
+
+/* === Ornamen Pixel Art Tetap === */
+.ornamen-fixed {
+    position: fixed;
+    z-index: 5;
+    opacity: 0.8;
+    /* Animasi goyang tetap bisa dipakai */
+    /* Pastikan selectornya benar */
+}
+.ornamen-fixed .pixel-art-container {
+    animation: gentleSwayPixel 5s ease-in-out infinite alternate;
+}
+.ornamen-fixed .pixel-lentera {
+     animation-name: gentleSwayPixelReverse; /* Animasi berbeda jika mau */
+     animation-duration: 4.5s;
+}
+
+.ornamen-top-left { top: 20px; left: 20px; }
+.ornamen-top-right { top: 20px; right: 20px; }
+.ornamen-bottom-left { bottom: 20px; left: 20px; }
+.ornamen-bottom-right { bottom: 20px; right: 20px; }
+
+@keyframes gentleSwayPixel {
+    from { transform: rotate(-4deg) translateY(-2px); }
+    to { transform: rotate(4deg) translateY(2px); }
+}
+@keyframes gentleSwayPixelReverse {
+    from { transform: rotate(5deg) translateY(3px); }
+    to { transform: rotate(-5deg) translateY(-3px); }
+}
+
+/* === Penyesuaian Pixel Art (jika perlu) === */
+/* ... (Salin semua styling .pixel-art-container, .pixel, warna pixel, .pixel-*-small dari CSS sebelumnya) ... */
+/* Pastikan ukuran dan posisi pixel art masih sesuai dengan desain baru */
+
+
+/* === Responsiveness === */
+@media (max-width: 768px) {
+    body::before, body::after {
+        height: 150px;
+        width: 200px;
+        filter: blur(20px);
+    }
+    .content-section {
+        padding: 40px 20px;
+        margin: 40px 15px;
+    }
+    .ornamen-fixed { display: none; /* Sembunyikan di mobile jika terlalu ramai */ }
+}
+
+@media (max-width: 480px) {
+    .hero-section h1 { font-size: 2.5rem; }
+    .hero-section h2 { font-size: 1.8rem; }
+    .hero-section p { font-size: 0.9rem; }
+    .overlay-nav a { font-size: 1.3rem; margin: 15px 0;}
+    .close-menu-btn { font-size: 2rem; top: 20px; right: 25px; }
+    .menu-toggle { padding: 5px; width: 35px; height: 35px; }
+    .hamburger-icon { width: 20px; }
+    .hamburger-icon::before { top: -6px; }
+    .hamburger-icon::after { bottom: -6px; }
+    .content-section h2 { font-size: 1.8rem; }
+    .content-section p { font-size: 1rem; }
+
+}
